@@ -74,3 +74,36 @@ export interface Appender {
     log(logEntry: LogEntry): void;
 }
 ```
+## Sample Codes
+Vanilla javascript code snippet for Node JS:
+
+```javascript
+var { Logbok, ConsoleLogAppender } = require("logbok");
+
+var logger;
+
+function myFunction() {
+   logger = logger || Logbok.getLogger(myFunction);
+   logger.info('this is an info log');
+}
+
+Logbok.CONFIG['log-appenders'] = [new ConsoleLogAppender()]
+
+myFunction(); // prints something like "04/24/2019 - 15:30:29.958 INFO [myFunction] - this is an info log"
+```
+
+Code snippet for Typescript:
+```typescript
+import { Logbok, ConsoleLogAppender } from "logbok";
+
+export class MyClass {
+    private static readonly logger = Logbok.getLogger(MyClass);
+
+    log() {
+        MyClass.logger.info('this is an info log');
+    }
+}
+
+Logbok.CONFIG['log-appenders'] = [ new ConsoleLogAppender() ];
+new MyClass().log(); // prints something like "04/24/2019 - 15:46:33.891 INFO [MyClass] - this is an info log"
+```
