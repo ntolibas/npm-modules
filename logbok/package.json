@@ -1,0 +1,46 @@
+{
+  "name": "logbok",
+  "version": "0.0.6",
+  "description": "Simple and straight forward TypeScript logging framework for everyone.",
+  "scripts": {
+    "compile": "tsc",
+    "test:ts": "npm run compile && node ./dist/test/create-logger-test.js",
+    "test:webpack": "webpack --config webpack.test.js && node ./dist/logger.umd.js",
+    "build": "webpack --config webpack.prod.js && cp lib-package.json ./dist/package.json && cp *.md ./dist && cp LICENSE ./dist",
+    "publish": "npm run build && npm publish ./dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ntolibas/npm-modules.git"
+  },
+  "keywords": [
+    "pre-formatted",
+    "logging",
+    "logger",
+    "colored",
+    "styled",
+    "typescript",
+    "ts",
+    "node",
+    "chrome",
+    "console",
+    "extensible",
+    "appender"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "clean-webpack-plugin": "^2.0.1",
+    "cpx": "^1.5.0",
+    "prettier": "^1.16.4",
+    "ts-loader": "^5.3.3",
+    "tslint": "^5.15.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-loader": "^3.5.4",
+    "typescript": "^3.4.1",
+    "typescript-declaration-webpack-plugin": "^0.1.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1",
+    "webpack-merge": "^4.2.1"
+  }
+}

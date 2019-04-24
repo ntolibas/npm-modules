@@ -1,0 +1,26 @@
+{
+  "name": "logbok",
+  "version": "0.0.6",
+  "description": "Simple and straight forward TypeScript logging framework for everyone.",
+  "main": "./logger.umd.js",
+  "typings": "./*.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ntolibas/npm-modules.git"
+  },
+  "keywords": [
+    "pre-formatted",
+    "logging",
+    "logger",
+    "colored",
+    "styled",
+    "typescript",
+    "ts",
+    "node",
+    "chrome",
+    "console",
+    "extensible",
+    "appender"
+  ],
+  "license": "MIT"
+}
