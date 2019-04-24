@@ -21,6 +21,6 @@ export namespace LogBokAppenders {
 }
 
 export interface Appender {
-    appenderName: string;
+    readonly appenderName: string;
     log(logEntry: LogEntry): void;
 }

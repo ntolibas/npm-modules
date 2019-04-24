@@ -3,7 +3,7 @@ import { LogEntry } from '../log-entry';
 import { Appender } from '../logbok-appenders';
 
 export class ChromeConsoleLogAppender implements Appender {
-    appenderName: string = 'StyledConsoleLogAppender';
+    readonly appenderName: string = 'ChromeConsoleLogAppender';
 
     log(logEntry: LogEntry) {
         const logStringWithStyleSpecifier = this.addStyleSpecifier(logEntry.buildLogString());

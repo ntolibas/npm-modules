@@ -1,4 +1,4 @@
-import { LoggingService } from './logging.service';
+import { Logbok } from './logbok';
 
 export namespace DisabledLoggersListService {
     export function disableLoggers (currentlyDisabledLoggersList: any[], newDisabledLoggersList: any[]) {
@@ -19,7 +19,7 @@ export namespace DisabledLoggersListService {
                 return true;
             }
         })
-        .forEach((logger: any) => LoggingService.getLogger(logger).enable());
+        .forEach((logger: any) => Logbok.getLogger(logger).enable());
 
         return remainDisabled;
     }
@@ -29,7 +29,7 @@ export namespace DisabledLoggersListService {
         // disable all new loggers & add to list
         newDisabledLoggersList.filter((logger: any) => !(logger in remainDisabled)) // logger is newly added
             .forEach((logger: any) => {
-                LoggingService.getLogger(logger).disable();
+                Logbok.getLogger(logger).disable();
                 currentlyDisabledLoggersList.push(logger);
             })
     }

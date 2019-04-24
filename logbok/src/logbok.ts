@@ -2,10 +2,11 @@ import { Logger as Logger } from './logger';
 import { LogLevel } from './log-level';
 import { ConfigPropertyHandler } from './property-handlers';
 
-export namespace LoggingService {
+export namespace Logbok {
     const loggers = new Map<string, Logger> ();
 
     export function getLogger<T>(type: T) {
+        console.log('created');
         const name = type['name'];
         let logger = loggers.get(name);
         if (!logger) {
