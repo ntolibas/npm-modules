@@ -6,7 +6,7 @@
     "compile": "tsc",
     "test:ts": "npm run compile && node ./dist/test/create-logger-test.js",
     "test:webpack": "webpack --config webpack.test.js && node ./dist/logger.umd.js",
-    "build": "webpack --config webpack.prod.js && cp lib-package.json ./dist/package.json && cp *.md ./dist && cp LICENSE ./dist",
+    "build": "webpack --config webpack.prod.js && cp lib-package.json ./dist/package.json && cp *.md ./dist && cp LICENSE ./dist && cp -r images ./dist/images",
     "publish": "npm run build && npm publish ./dist"
   },
   "repository": {

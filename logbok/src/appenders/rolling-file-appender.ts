@@ -1,6 +1,6 @@
 import { Appender } from '../logbok-appenders';
 import { LogEntry } from '../log-entry';
-import { Stats, appendFileSync, statSync, readdirSync, renameSync } from 'fs';
+import { Stats, appendFileSync, statSync, readdirSync, renameSync, mkdirSync } from 'fs';
 import { dirname, basename, sep } from 'path';
 
 export class RollingFileAppender implements Appender {
@@ -10,7 +10,7 @@ export class RollingFileAppender implements Appender {
     private shouldRollover: (stats: Stats) => boolean;
     private readonly rolloverFilenamePattern: RegExp;
 
-    constructor(private readonly filePath: string = 'logbok.log', private options: RolloverOption = { timeInterval: RolloverTime.DAILY }) {
+    constructor(private readonly filePath: string = './logbok.log', private rolloverOption: RolloverOption = { timeInterval: RolloverTime.DAILY }) {
         this.rolloverFilenamePattern = new RegExp(this.generateRolloverFilenamePattern());
         this.fileSizeLimit = this.calculateSizeLimitBytes();
         if (this.fileSizeLimit)  {
@@ -22,11 +22,23 @@ export class RollingFileAppender implements Appender {
     }
 
     log(logEntry: LogEntry): void {
+        this.ensureFileExistence();
         let stats = statSync(this.filePath);
         appendFileSync(this.filePath, logEntry.buildLogString() + '\n');
         if (this.shouldRollover(stats)) {
             this.rollover();
         }
+    }
+
+    private ensureFileExistence() {
+        try {
+            mkdirSync(dirname(this.filePath), {recursive: true});
+        } catch(err) {
+            if (err.code !== 'EEXIST')
+               throw err;
+        }
+        appendFileSync(this.filePath, '');
+        this.ensureFileExistence = () => {};
     }
 
     private generateRolloverFilenamePattern(): string {
@@ -45,7 +57,6 @@ export class RollingFileAppender implements Appender {
     }
 
     private hasReachedFileSizeLimit(stats: Stats): boolean {
-        console.log('stats.size: %d, this.fileSizeLimit: %d', stats.size, this.fileSizeLimit)
         return stats.size >= this.fileSizeLimit;
     }
 
@@ -55,16 +66,16 @@ export class RollingFileAppender implements Appender {
     }
 
     private calculateSizeLimitBytes(): number {
-        return (((this.options.sizeInMiB || (this.options.sizeInGiB || 0) * 1024 // Megabytes
-            || (this.options.size || 0)) * 1024) // Kilobytes
-            || (this.options.sizeInKiB || 0)) * 1024; // bytes
+        return (((this.rolloverOption.sizeInMiB || (this.rolloverOption.sizeInGiB || 0) * 1024 // Megabytes
+            || (this.rolloverOption.size || 0)) * 1024) // Kilobytes
+            || (this.rolloverOption.sizeInKiB || 0)) * 1024; // bytes
     }
 
     private calculateTimeIntervalLimitMs(): number {
-        return ((this.options.timeInterval || 0) 
-            || (this.options.timeIntervalInSeconds || 0)
-            || (this.options.timeIntervalInMinutes || 0) * 60
-            || (this.options.timeIntervalInHours || 0) * 3600) * 1000
+        return ((this.rolloverOption.timeInterval || 0) 
+            || (this.rolloverOption.timeIntervalInSeconds || 0)
+            || (this.rolloverOption.timeIntervalInMinutes || 0) * 60
+            || (this.rolloverOption.timeIntervalInHours || 0) * 3600) * 1000
     }
 
     private rollover() {
@@ -87,7 +98,7 @@ export class RollingFileAppender implements Appender {
             }
         });
         return this.rolloverFilenamePattern.source.replace('(\\d+)', (max + 1).toString())
-                            .replace('\\.', '.');
+                   .replace('\\.', '.');
     }
 }
 
@@ -106,7 +117,7 @@ export enum RolloverTime {
     HOURLY = 60 * 60,
     DAILY = HOURLY * 24,
     WEEKLY = DAILY * 7,
-    MONTHLY = DAILY * 30,
+    MONTHLY = DAILY * 30
 }
 
 export enum RolloverSize {

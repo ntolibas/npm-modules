@@ -1,4 +1,3 @@
-## Sample usage
 ### To install
 ```
 npm install --save logbok
@@ -42,7 +41,7 @@ Logbok reads the specified configuration from its `CONFIG` property.
 |:---:|:---:|:---|:---:|
 |*log-level*|string|can be either `debug`, `info`, `warn`, and `error` - with `debug` as the lowest and `error` as the highest level, respectively - initially set to `debug`.|```Logbok.CONFIG['log-level'] = 'debug'```|
 |*disabled-loggers*|array|contains the list of the classes/types whose loggers will be disabled - initially set to empty.|```Logbok.CONFIG['disabled-loggers'] = [MyClass]```|
-|*log-appenders*|array|contains the list of instances of log appenders to be used - initially set to empty.<br/>Currently, Logbok provides 4 appenders, namely, `ConsoleLogAppender`, `ChromeConsoleLogAppender`, `NodeConsoleLogAppender`, and `IsoTimestampAppender`|```Logbok.CONFIG['log-appenders'] = [ new ChromeConsoleLogAppender(), new CustomLogAppender() ]```|
+|*log-appenders*|array|contains the list of instances of log appenders to be used - initially set to empty.<br/>Currently, Logbok provides 5 appenders, namely, `ConsoleLogAppender`, `ChromeConsoleLogAppender`, `NodeConsoleLogAppender`, `IsoTimestampAppender`, and `RollingFileAppender`|```Logbok.CONFIG['log-appenders'] = [ new ChromeConsoleLogAppender(), new CustomLogAppender() ]```|
 ---
 
 ***_Note: All of the above mentioned attributes are configured in a way that when a new value is assigned, the changes will be applied immediately._
@@ -107,3 +106,82 @@ export class MyClass {
 Logbok.CONFIG['log-appenders'] = [ new ConsoleLogAppender() ];
 new MyClass().log(); // prints something like "04/24/2019 - 15:46:33.891 INFO [MyClass] - this is an info log"
 ```
+
+### Log Appenders
+Logbok comes with 5 core log appenders, namely, `ConsoleLogAppender`, `ChromeConsoleLogAppender`, `NodeConsoleLogAppender`, `IsoTimestampAppender`, and `RollingFileAppender`. Each one has a different usecase but some can be used in conjunction with one another (e.g. `RollingFileAppender` can be paired with either of the three: `ConsoleLogAppender`, `NodeConsoleLogAppender`, `IsoTimestampAppender`).
+
+- #### ConsoleLogAppender
+   This is the most basic log appender among all logbok appenders.<br/>
+   This one is built on top of the console object, hence the name.<br/>
+   No magic and all, just plain text pre-formatted to look like a decent log message.<br/>
+   Below is a sample snippet of the output of a ConsoleLogAppender.
+
+   ![ConsoleLogAppender](./images/console-log-appender.png)
+
+- #### IsoTimestampAppender
+   This one is time-formatted version of ConsoleLogAppender.<br/>
+   No magic and all, just plain text with pre-formatted time to look like a decent log message.<br/>
+   Below is a sample snippet of the output of a IsoTimestampAppender.
+
+   ![IsoTimestampAppender](./images/iso-timestamp-appender.png)
+
+- #### ChromeConsoleLogAppender
+   This one is a color-coded version of ConsoleLogAppender dedicated for Chrome/Chrome-based renderer apps (e.g. Electron) <br/>
+   Below is a sample snippet of the output of a ChromeConsoleLogAppender.
+
+   ![ChromeConsoleLogAppender](./images/chrome-console-log-appender.png)
+
+- #### NodeConsoleLogAppender
+   This one is similar to ChromeConsoleLogAppender in the manner that it is also a color-coded version of ConsoleLogAppender.<br/>
+   The only difference is that this one is for the command line/terminal window console instead of the chrome. <br/>
+   Below is a sample snippet of the output of a NodeConsoleLogAppender.
+
+   ![NodeConsoleLogAppender](./images/node-console-log-appender.png)
+
+- #### RollingFileAppender
+   This one is more advanced compared to the other types of appender. The idea is that it redirects logs to a file instead of using a console object.<br>
+   Currently, this can only be used by backend codes, as it requires collocation of the log file with the running instance.<br>
+   This appender can be instantiated with the following optional parameters:
+
+   
+   |NAME|TYPE|DESCRIPTION|REMARKS|
+   |---|---|---|---|
+   |_filePath_|string| the path of the file where to write the logs, creates it if it does not exist yet | default value is './logbok.log'
+   |_rolloverOption_|RolloverOption| the rollover mechanism describing when to rename the current log file with a new rollover filename. _see below description of possible values_| naming follows counting numbers starting from 1, e.g. for filepath='./server.log' rollover files will be server-1.log, server-2.log, and so on.
+
+   ```typescript
+    export declare interface RolloverOption {
+        size?: RolloverSize,
+        sizeInKiB?: number
+        sizeInMiB?: number,
+        sizeInGiB?: number,
+        timeInterval?: RolloverTime,
+        timeIntervalInSeconds?: number,
+        timeIntervalInMinutes?: number,
+        timeIntervalInHours?: number
+    }
+
+    export enum RolloverTime {
+        HOURLY,
+        DAILY,
+        WEEKLY,
+        MONTHLY
+    }
+
+    export enum RolloverSize {
+        TEN_MiB, // is equal to (10 * 1024 * 1024) bytes
+        FIFTY_MiB, // is equal to (5 * TEN_MiB) bytes
+        HUNDRED_MiB, // is equal to (10 * TEN_MiB) bytes
+        ONE_GiB, // is equal to (10 * 1024 * 1024 * 1024) bytes
+        TEN_GiB // is equal to (10 * TEN_GiB) bytes
+    }
+   ```
+   Below are sample rollover configurations
+   ``` typescript
+    new RollingFileAppender('./server.log', { size: RolloverSize.TEN_MiB })       // rolls over everytime log file reaches 10MiB
+    new RollingFileAppender('./server.log', { sizeInKiB: 100 }                    // rolls over everytime log file reaches 100KiB
+    new RollingFileAppender('./server.log', { timeInterval: RolloverTime.HOURLY } // rolls over every 1 hour
+    new RollingFileAppender('./server.log', { timeIntervalInSeconds: 10 }         // rolls over every 10 seconds
+   ```
+
+   
