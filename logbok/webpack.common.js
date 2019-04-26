@@ -2,6 +2,7 @@ const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
+    target: 'node',
     entry: {
         app: path.resolve(__dirname, './src/index.ts')
     },

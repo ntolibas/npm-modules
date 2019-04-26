@@ -1,6 +1,6 @@
 {
   "name": "logbok",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Simple and straight forward TypeScript logging framework for everyone.",
   "scripts": {
     "compile": "tsc",
@@ -42,5 +42,8 @@
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1",
     "webpack-merge": "^4.2.1"
+  },
+  "dependencies": {
+    "@types/node": "^11.13.7"
   }
 }
